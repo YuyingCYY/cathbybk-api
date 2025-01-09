@@ -1,0 +1,38 @@
+### 環境變數
+@host = http://localhost:8080
+@contentType = application/json
+
+### 1. 呼叫外部API並儲存資料
+GET {{host}}/api/fund/save
+
+### 2. 查詢某日價格
+GET {{host}}/api/fund/price?productId=10480016&date=2023-03-13
+
+### 3. 修改某日價格
+PUT {{host}}/api/fund/price/10480016/2023-03-10
+Content-Type: {{contentType}}
+
+15.55
+
+### 4. 新增價格至 DB
+POST {{host}}/api/fund/price
+Content-Type: {{contentType}}
+
+{
+    "productId": "10480016",
+    "date": "2024-03-11",
+    "price": 28.60
+}
+
+### 5. 刪除特定日期的價格
+DELETE {{host}}/api/fund/price/10480016/2024-03-11
+
+### 6. 計算漲跌和漲跌幅
+POST {{host}}/api/prices/analysis
+Content-Type: {{contentType}}
+
+{
+    "productId": "10480016",
+    "startDate": "2024-03-01",
+    "endDate": "2024-03-10"
+}
