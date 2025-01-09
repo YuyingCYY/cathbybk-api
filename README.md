@@ -16,13 +16,13 @@ db 資料夾下的 sqlSchema.sql 為 建立 Database 以及 Table 語法。
 下載此專案至本地或是 git clone https://github.com/YuyingCYY/cathbybk-api.git
 在此資料夾打開終端機
 
-# Docker 直接執行
+### Docker 直接執行
 
 ```shell
 docker-compose up --build
 ```
 
-# Maven 直接執行
+### Maven 直接執行
 
 請先確保已經有 Postgresql，並且按照語法建立資料庫及資料表
 
@@ -30,7 +30,7 @@ docker-compose up --build
 mvn spring-boot:run
 ```
 
-# JAR 檔案運行
+### JAR 檔案運行
 
 請先確保已經有 Postgresql，並且按照語法建立資料庫及資料表
 
