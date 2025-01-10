@@ -2,6 +2,9 @@ package com.yu.cathbybkapi.dto;
 
 import java.time.LocalDate;
 
+/**
+ * 新增商品請求體物件
+ */
 public class PriceRequest {
 
   private String productId;

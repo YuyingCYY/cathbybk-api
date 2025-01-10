@@ -1,6 +1,5 @@
 package com.yu.cathbybkapi;
 
-import com.yu.cathbybkapi.repository.PriceRepository;
 import com.yu.cathbybkapi.repository.ProductRepository;
 import com.yu.cathbybkapi.service.ApiService;
 import org.springframework.boot.CommandLineRunner;
