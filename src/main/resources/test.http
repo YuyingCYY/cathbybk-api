@@ -3,7 +3,14 @@
 @contentType = application/json
 
 ### 1. 呼叫外部API並儲存資料
-#GET {{host}}/api/fund/save
+GET {{host}}/api/fund/save
+Content-Type: {{contentType}}
+
+{
+    "productId": "10480016",
+    "from": "2023/03/10",
+    "to": "2024/03/10"
+}
 
 ### 2. 查詢某日價格
 GET {{host}}/api/fund/price?productId=10480016&date=2023-03-13

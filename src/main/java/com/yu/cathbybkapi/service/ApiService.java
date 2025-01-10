@@ -2,6 +2,7 @@ package com.yu.cathbybkapi.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yu.cathbybkapi.dto.FetchDataRequest;
 import com.yu.cathbybkapi.entity.Price;
 import com.yu.cathbybkapi.entity.Product;
 import com.yu.cathbybkapi.repository.PriceRepository;
@@ -10,6 +11,7 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -30,14 +32,20 @@ public class ApiService {
     this.priceRepository = priceRepository;
   }
 
-  public void fetchData() throws Exception {
+  public void fetchData(FetchDataRequest request) throws Exception {
+    String productId = request.getProductId();
+    Optional<Product> productOpt = productRepository.findById(productId);
+    if (productOpt.isPresent()) {
+      throw new RuntimeException("product 已存在");
+    }
+
     String url =
       "https://www.cathaybk.com.tw/cathaybk/service/newwealth/fund/chartservice.asmx/GetFundNavChart";
     Map<String, Object> requestBody = new HashMap<>();
     Map<String, Object> req = new HashMap<>();
-    req.put("Keys", new String[]{"10480016"});
-    req.put("From", "2023/03/10");
-    req.put("To", "2024/03/10");
+    req.put("Keys", new String[]{productId});
+    req.put("From", request.getFrom());
+    req.put("To", request.getTo());
     requestBody.put("req", req);
 
     HttpHeaders headers = new HttpHeaders();

@@ -1,5 +1,6 @@
 package com.yu.cathbybkapi;
 
+import com.yu.cathbybkapi.dto.FetchDataRequest;
 import com.yu.cathbybkapi.repository.ProductRepository;
 import com.yu.cathbybkapi.service.ApiService;
 import org.springframework.boot.CommandLineRunner;
@@ -25,7 +26,11 @@ public class CathbybkApiApplication implements CommandLineRunner {
   @Override
   public void run(String... args) throws Exception {
     if (productRepository.count() == 0) {
-      apiService.fetchData();
+      FetchDataRequest request = new FetchDataRequest();
+      request.setProductId("10480016");
+      request.setFrom("2023/03/10");
+      request.setTo("2024/03/10");
+      apiService.fetchData(request);
     }
   }
 }

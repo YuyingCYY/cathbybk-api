@@ -1,5 +1,6 @@
 package com.yu.cathbybkapi.controller;
 
+import com.yu.cathbybkapi.dto.FetchDataRequest;
 import com.yu.cathbybkapi.dto.PriceAnalysisRequest;
 import com.yu.cathbybkapi.dto.PriceRequest;
 import com.yu.cathbybkapi.dto.PriceResponse;
@@ -42,12 +43,13 @@ public class FundController {
    * 呼叫國泰 API 獲得內容並存資料庫
    */
   @GetMapping("/save")
-  public ResponseEntity<?> save() {
+  public ResponseEntity<?> save(@RequestBody FetchDataRequest request) {
     try {
-      apiService.fetchData();
+      apiService.fetchData(request);
       return ResponseEntity.ok("Ok");
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        .body(e.getMessage());
     }
   }
 
