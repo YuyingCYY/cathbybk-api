@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Price</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    </head>
+    <body>
+        <div class="container">
+            <h1>Add New Price</h1>
+            <form id="priceForm" class="mb-2">
+                <div class="form-group">
+                    <label for="productId">Product ID</label>
+                    <input type="text" class="form-control" id="productId" required>
+                </div>
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" class="form-control" id="date" required>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price</label>
+                    <input type="number" step="0.01" class="form-control" id="price" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </form>
+            <!-- 查詢表單 -->
+            <h4>查詢某日價格</h4>
+            <form id="priceQueryForm" class="form-inline mb-3">
+                <div class="form-group mr-2">
+                    <label for="queryProductId">Product ID:</label>
+                    <input type="text" class="form-control" id="queryProductId" required>
+                </div>
+                <div class="form-group mr-2">
+                    <label for="queryDate">Date:</label>
+                    <input type="date" class="form-control mr-2" id="queryDate" required>
+                    <button type="submit" class="btn btn-primary">Query</button>
+                </div>
+            </form>
+            <!-- 查詢結果 -->
+            <div id="priceResult" class="alert alert-info" role="alert" style="display: none;">
+                <h4 class="alert-heading">Price Result</h4>
+                <p id="resultPrice"></p>
+            </div>
+
+            <!-- 價格計算 -->
+            <h4>價格計算</h4>
+            <form id="priceAnalysisForm" class="form-inline mb-3">
+                <div class="form-group mr-2">
+                    <label for="analysisProductId">Product ID:</label>
+                    <input type="text" class="form-control" id="analysisProductId" required>
+                </div>
+                <div class="form-group mr-2">
+                    <label for="analysisStartDate">Start Date:</label>
+                    <input type="date" class="form-control" id="analysisStartDate" required>
+                </div>
+                <div class="form-group mr-2">
+                    <label for="analysisEndDate">End Date:</label>
+                    <input type="date" class="form-control" id="analysisEndDate" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Analyze</button>
+            </form>
+
+            <!-- 計算結果 -->
+            <div id="priceAnalysisResult" class="alert alert-info" role="alert" style="display: none;">
+                <h4 class="alert-heading">Price Analysis Result</h4>
+                <p>Price Change: <span id="resultPriceChange"></span></p>
+                <p>Price Change Percentage: <span id="resultPriceChangePercentage"></span></p>
+            </div>
+
+            <h4>Price List</h4>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ProductId</th>
+                        <th>Date</th>
+                        <th>Price</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr th:each="price : ${prices}">
+                    <td th:text="${price.productId}"></td>
+                    <td th:text="${price.date}"></td>
+                    <td th:text="${price.price}"></td>
+                    <td>
+                        <button class="btn btn-primary btn-sm editBtn"
+                                th:data-product-id="${price.productId}" th:data-date="${price.date}"
+                                th:data-price="${price.price}" data-toggle="modal" data-target="#editModal">
+                            Edit
+                        </button>
+                        <button class="btn btn-danger btn-sm deleteBtn"
+                                th:data-product-id="${price.productId}" th:data-date="${price.date}">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!-- 編輯價格視窗 -->
+            <div class="modal fade" id="editModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Edit Price</h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="editForm">
+                                <input type="hidden" id="editProductId">
+                                <input type="hidden" id="editDate">
+                                <div class="form-group">
+                                    <label for="editPrice">New Price</label>
+                                    <input type="number" step="0.01" class="form-control" id="editPrice" required>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" id="saveEditBtn">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 引入 Bootstrap 的 JavaScript 文件 -->
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+        <script>
+            // 查詢價格
+            $('#priceQueryForm').submit(function(e) {
+              e.preventDefault();
+
+              const productId = $('#queryProductId').val();
+              const date = $('#queryDate').val();
+
+              fetch(`/api/fund/price?productId=${productId}&date=${date}`)
+              .then(response => response.json())
+              .then(data => {
+                // 顯示查詢結果
+                $('#resultPrice').text(`Price: ${data.price === null ? "Price not found" : data.price}`);
+                $('#priceResult').show();
+              })
+              .catch(error => {
+                alert('Error: ' + error.message);
+                console.error(error);
+              });
+            })
+            // 新增價格
+            document.getElementById("priceForm").addEventListener("submit", e => {
+              e.preventDefault();
+
+              const productId = document.getElementById("productId").value;
+              const date = document.getElementById("date").value;
+              const price = document.getElementById("price").value;
+
+              fetch("/api/fund/price", {
+                method: "POST",
+                headers: {
+                  'Content-Type': "application/json"
+                },
+                body: JSON.stringify({ productId, date, price})
+              })
+              .then(response => {
+                if (response.ok) {
+                  response.json()
+                } else {
+                  return response.json().then(data => {
+                    throw new Error(data.message);
+                  })
+                }
+              })
+              .then(data => {
+                window.location.reload();
+              })
+              .catch(error => {
+                alert(error.message);
+                console.error(error);
+              });
+            })
+
+            // 編輯價格
+            document.querySelectorAll('.editBtn').forEach(btn => {
+              btn.addEventListener('click', e => {
+                const productId = e.target.dataset.productId;
+                const date = e.target.dataset.date;
+                const price = e.target.dataset.price;
+
+                // 填充編輯表單
+                $('#editProductId').val(productId);
+                $('#editDate').val(date);
+                $('#editPrice').val(price);
+
+                $('#editModal').modal('show');
+              });
+            });
+
+            // 保存編輯後的價格
+            $('#saveEditBtn').click(() => {
+              const productId =$('#editProductId').val();
+              const date = $('#editDate').val();
+              const newPrice = $('#editPrice').val();
+
+              // 使用 AJAX 請求更新價格
+              fetch(`/api/fund/price/${productId}/${date}`, {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newPrice)
+              })
+              .then(response => response.json())
+              .then(data => {
+                // 更新成功後重新載入頁面
+                window.location.reload();
+              })
+              .catch(error => console.error(error));
+
+              // 關閉編輯模態視窗
+              $('#editModal').modal('hide');
+            })
+
+            // 刪除價格
+            document.querySelectorAll('.deleteBtn').forEach(btn => {
+              btn.addEventListener('click', e => {
+                const productId = e.target.dataset.productId;
+                const date = e.target.dataset.date;
+
+                fetch(`api/fund/price/${productId}/${date}`, {
+                  method: "DELETE"
+                })
+                .then(response => response.json())
+                .then(data => {
+                  window.location.reload();
+                })
+                .catch(error => console.error(error));
+              })
+            })
+
+            // 分析價格
+            document.getElementById('priceAnalysisForm').addEventListener('submit', function(e) {
+              e.preventDefault();
+
+              const productId = document.getElementById('analysisProductId').value;
+              const startDate = document.getElementById('analysisStartDate').value;
+              const endDate = document.getElementById('analysisEndDate').value;
+
+              fetch('/api/fund/price/analysis', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ productId, startDate, endDate })
+              })
+              .then(response => response.json())
+              .then(data => {
+                // 顯示分析結果
+                document.getElementById('resultPriceChange').textContent = data.priceChange;
+                document.getElementById('resultPriceChangePercentage').textContent = data.priceChangePercentage;
+                document.getElementById('priceAnalysisResult').style.display = 'block';
+              })
+              .catch(error => {
+                alert('Error: ' + error.message);
+                console.error(error);
+              });
+            });
+        </script>
+    </body>
+</html>

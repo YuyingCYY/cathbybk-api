@@ -1,0 +1,40 @@
+/* 表格樣式 */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+}
+
+/* 表格標題樣式 */
+thead th {
+    background-color: #f2f2f2;
+    padding: 10px;
+    text-align: left;
+    font-weight: bold;
+}
+
+/* 表格內容樣式 */
+tbody td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* 偶數列背景色 */
+tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* 滑過行時的樣式 */
+tbody tr:hover {
+    background-color: #e6e6e6;
+}
+
+/* 響應式設計 */
+@media (max-width: 767px) {
+    table {
+        font-size: 14px;
+    }
+    thead th, tbody td {
+        padding: 8px;
+    }
+}

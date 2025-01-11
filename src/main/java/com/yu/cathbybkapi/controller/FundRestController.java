@@ -27,13 +27,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/fund")
-public class FundController {
+public class FundRestController {
 
   private final FundService fundService;
   private final ApiService apiService;
   private final PriceService priceService;
 
-  public FundController(FundService fundService, ApiService apiService, PriceService priceService) {
+  public FundRestController(FundService fundService, ApiService apiService, PriceService priceService) {
     this.fundService = fundService;
     this.apiService = apiService;
     this.priceService = priceService;
