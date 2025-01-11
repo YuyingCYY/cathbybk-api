@@ -47,7 +47,13 @@ JAR 檔案運行應用：
   java -jar target/cathbybk-api-0.0.1-SNAPSHOT.jar
 ```
 
-## 執行 API
+## 網頁執行
+
+程式運行成功後，可在網頁導到以下網址，使用簡易版網頁來操作各 API
+
+http://localhost:8080/index
+
+## 操作 API
 
 api 基本 url 為:http://localhost:8080/api/fund
 
